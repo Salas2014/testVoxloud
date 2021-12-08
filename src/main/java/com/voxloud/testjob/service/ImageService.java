@@ -9,7 +9,7 @@ public interface ImageService {
 
     byte[] downloadTodoImage(Long id);
 
-    List<Image> getAllTodos(String username);
+    List<Image> getAllImages(String username);
 
     List<Image> saveImages(String[] titles, String[] descriptions, MultipartFile[] files, String username);
 

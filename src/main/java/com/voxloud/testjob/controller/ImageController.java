@@ -3,12 +3,13 @@ package com.voxloud.testjob.controller;
 import com.voxloud.testjob.domain.Image;
 import com.voxloud.testjob.service.ImageService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,8 +25,16 @@ public class ImageController {
 
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Image>> getImages(Authentication authentication) {
-        return new ResponseEntity<>(imageService.getAllTodos(authentication.getName()), HttpStatus.OK);
+    public ResponseEntity<Page<Image>> getImages(Authentication authentication, Pageable p) {
+
+        List<Image> allImages = imageService.getAllImages(authentication.getName());
+
+        int start = (int) p.getOffset();
+        int end = (Math.min((start + p.getPageSize()), allImages.size()));
+        Page<Image> page
+                = new PageImpl<>(allImages.subList(start, end), p, allImages.size());
+
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
     // create single entity or []

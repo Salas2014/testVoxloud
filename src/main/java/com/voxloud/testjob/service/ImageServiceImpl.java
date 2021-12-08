@@ -88,11 +88,13 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<Image> getAllTodos(String username) {
+    public List<Image> getAllImages(String username) {
         List<Image> images = new ArrayList<>();
 
         Optional<User> userByUsername = userRepository.findUserByUsername(username);
         userByUsername.ifPresent(user -> user.getImages().forEach(images::add));
+
+
 
         return images;
     }
