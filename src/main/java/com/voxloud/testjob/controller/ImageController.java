@@ -28,6 +28,7 @@ public class ImageController {
         return new ResponseEntity<>(imageService.getAllTodos(authentication.getName()), HttpStatus.OK);
     }
 
+    // create single entity or []
     @PostMapping(
             path= "/images",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -37,7 +38,6 @@ public class ImageController {
                                                   @RequestParam("description") String[] descriptions,
                                                   @RequestParam("file") MultipartFile[] files,
                                                   Authentication authentication){
-
 
         return new ResponseEntity<>(imageService.saveImages(titles, descriptions, files, authentication.getName()), HttpStatus.OK);
     }

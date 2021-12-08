@@ -1,7 +1,5 @@
 package com.voxloud.testjob.domain;
 
-import lombok.Data;
-
 import javax.persistence.*;
 
 @Entity
