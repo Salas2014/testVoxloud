@@ -2,7 +2,9 @@ package com.voxloud.testjob.service;
 
 import com.voxloud.testjob.bucket.BucketName;
 import com.voxloud.testjob.domain.Image;
+import com.voxloud.testjob.domain.User;
 import com.voxloud.testjob.repository.ImageRepository;
+import com.voxloud.testjob.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,9 +19,12 @@ import static org.apache.http.entity.ContentType.*;
 public class ImageServiceImpl implements ImageService {
     private final FileStore fileStore;
     private final ImageRepository repository;
+    private final UserRepository userRepository;
+
+
 
     @Override
-    public Image saveTodo(String title, String description, MultipartFile file) {
+    public Image saveTodo(String title, String description, MultipartFile file, String username) {
         //check if the file is empty
         if (file.isEmpty()) {
             throw new IllegalStateException("Cannot upload empty file");
@@ -43,10 +48,14 @@ public class ImageServiceImpl implements ImageService {
         } catch (IOException e) {
             throw new IllegalStateException("Failed to upload file", e);
         }
+
+        Optional<User> userByUsername = userRepository.findUserByUsername(username);
+
         Image image = Image.builder()
                 .description(description)
                 .title(title)
                 .imagePath(path)
+                .user(userByUsername.get())
                 .imageFileName(fileName)
                 .build();
         repository.save(image);
@@ -60,9 +69,13 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<Image> getAllTodos() {
+    public List<Image> getAllTodos(String username) {
         List<Image> images = new ArrayList<>();
-        repository.findAll().forEach(images::add);
+
+        Optional<User> userByUsername = userRepository.findUserByUsername(username);
+        if(userByUsername.isPresent()){
+            userByUsername.get().getImages().forEach(images::add);
+        }
         return images;
     }
 }

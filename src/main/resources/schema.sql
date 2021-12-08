@@ -10,3 +10,5 @@ CREATE TABLE IF NOT EXISTS role (
     `name` VARCHAR(45) NOT NULL,
     `user` INT NOT NULL,
 PRIMARY KEY (`id`));
+
+
