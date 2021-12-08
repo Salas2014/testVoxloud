@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 
 @Builder
@@ -100,5 +101,18 @@ public class Image {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Image image = (Image) o;
+        return Objects.equals(id, image.id) && Objects.equals(title, image.title) && Objects.equals(description, image.description) && Objects.equals(imagePath, image.imagePath) && Objects.equals(imageFileName, image.imageFileName) && Objects.equals(user, image.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, description, imagePath, imageFileName, user);
     }
 }
