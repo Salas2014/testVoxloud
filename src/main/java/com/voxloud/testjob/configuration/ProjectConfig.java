@@ -37,8 +37,9 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf().ignoringAntMatchers("/h2-console/**")
                 .and().headers().frameOptions().sameOrigin();
 
-        http.httpBasic();
         http.csrf().disable();
+        http.httpBasic();
+
         http.authorizeRequests().anyRequest().authenticated();
 
     }

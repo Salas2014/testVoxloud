@@ -94,8 +94,6 @@ public class ImageServiceImpl implements ImageService {
         Optional<User> userByUsername = userRepository.findUserByUsername(username);
         userByUsername.ifPresent(user -> user.getImages().forEach(images::add));
 
-
-
         return images;
     }
 

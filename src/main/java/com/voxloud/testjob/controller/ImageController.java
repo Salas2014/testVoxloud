@@ -48,6 +48,10 @@ public class ImageController {
                                                   @RequestParam("file") MultipartFile[] files,
                                                   Authentication authentication){
 
+        for(MultipartFile file : files){
+            System.out.println(file.getContentType());
+        }
+
         return new ResponseEntity<>(imageService.saveImages(titles, descriptions, files, authentication.getName()), HttpStatus.OK);
     }
 
