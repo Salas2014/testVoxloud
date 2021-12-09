@@ -21,6 +21,7 @@ public class Image {
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     private User user;
+    
 
     public Image() {
     }
@@ -112,4 +113,6 @@ public class Image {
     public int hashCode() {
         return Objects.hash(id, title, description, imagePath, imageFileName, user);
     }
+
+
 }

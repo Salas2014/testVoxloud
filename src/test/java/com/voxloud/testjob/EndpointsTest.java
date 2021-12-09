@@ -1,52 +1,44 @@
 package com.voxloud.testjob;
 
-import com.voxloud.testjob.domain.Image;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.voxloud.testjob.service.ImageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithUserDetails("vlad")
 public class EndpointsTest {
 
     @Autowired
     private MockMvc mockMvc;
+    private static ObjectMapper mapper = new ObjectMapper();
+    @MockBean
+    private ImageService imageService;
 
     @Test
     public void createImage() throws Exception{
-        String uri = "/images";
-//        String title = "two";
-//        Map<String, String> params = new HashMap<>(){{
-//            put("title", "value1");
-//            put("descriptions", "value2");
-//        }};
-//
-//        MultipartFile[] files =
-//                new MultipartFile[]{new MockMultipartFile("data",
-//                "filename.png", "image/png", "multipart/form-data".getBytes()),
-//                new MockMultipartFile("data",
-//                        "filename.png", "image/png", "multipart/form-data".getBytes())};
-//
-//        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
-//                "text/plain", "Spring Framework".getBytes());
-//
-//        this.mockMvc.perform(MockMvcRequestBuilders.multipart(uri)
-//                .file(multipartFile)
-//                .accept(MediaType.parseMediaType("image/png")
-        Image image = new Image();
-        String inputJson = super.mapToJson(product);
+        String uri = "/api/v1/todo/images";
 
+        MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", "Spring Framework".getBytes());
 
+        mockMvc.perform(MockMvcRequestBuilders.multipart(uri).file(multipartFile).param("title", "tit")
+                .param("description", "1"))
+                .andExpect(status().isCreated())
+                .andExpect(content().string("[]"));
+    }
 
-
+    @Test
+    void downloadTodoImage() {
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ImageService {
 
-    byte[] downloadTodoImage(Long id);
+    byte[] downloadTodoImage(Long id, String username);
 
     List<Image> getAllImages(String username);
 

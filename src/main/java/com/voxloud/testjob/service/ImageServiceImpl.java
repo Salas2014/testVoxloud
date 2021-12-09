@@ -7,6 +7,8 @@ import com.voxloud.testjob.domain.User;
 import com.voxloud.testjob.repository.ImageRepository;
 import com.voxloud.testjob.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,7 +42,13 @@ public class ImageServiceImpl implements ImageService {
             }
         }
 
-        List<HashMap<String, String>> metadata = new ArrayList<>();
+        Optional<Image> karim = repository.findImageByUser("karim");
+        if(karim.isPresent()){
+            System.out.println(karim);
+        }else {
+            System.out.println("zalypa");
+
+        }        List<HashMap<String, String>> metadata = new ArrayList<>();
         List<Image> images = new ArrayList<>();
 
         Arrays.stream(files).forEach(file -> {
@@ -79,8 +87,10 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public byte[] downloadTodoImage(Long id) {
-        Optional<Image> image = repository.findById(id);
+    public byte[] downloadTodoImage(Long id, String username) {
+
+        Optional<Image> image = repository.findImageByUser(username);
+
         if(image.isPresent()){
             return fileStore.download(image.get().getImagePath(), image.get().getImageFileName());
         }

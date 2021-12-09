@@ -1,6 +1,7 @@
 package com.voxloud.testjob.controller;
 
 import com.voxloud.testjob.domain.Image;
+import com.voxloud.testjob.domain.User;
 import com.voxloud.testjob.service.ImageService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +31,7 @@ public class ImageController {
     public ResponseEntity<Page<Image>> getImages(Authentication authentication, Pageable p) {
 
         List<Image> allImages = imageService.getAllImages(authentication.getName());
+
 
         int start = (int) p.getOffset();
         int end = (Math.min((start + p.getPageSize()), allImages.size()));
@@ -52,11 +56,15 @@ public class ImageController {
             System.out.println(file.getContentType());
         }
 
-        return new ResponseEntity<>(imageService.saveImages(titles, descriptions, files, authentication.getName()), HttpStatus.OK);
+        return new ResponseEntity<>(imageService.saveImages(titles, descriptions, files, authentication.getName()), HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "{id}/image/download")
-    public byte[] downloadImage(@PathVariable("id") Long id) {
-        return imageService.downloadTodoImage(id);
+    @GetMapping(value = "{id}/image/download/{username}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize
+            ("#username == authentication.getName()")
+    public byte[] downloadImage(@PathVariable("id") Long id,
+                                @PathVariable("username")String username) {
+        return imageService.downloadTodoImage(id, username);
     }
 }
