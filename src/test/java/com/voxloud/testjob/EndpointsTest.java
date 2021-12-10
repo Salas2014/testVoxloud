@@ -1,17 +1,21 @@
 package com.voxloud.testjob;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.voxloud.testjob.domain.Image;
+import com.voxloud.testjob.domain.User;
 import com.voxloud.testjob.service.ImageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @SpringBootTest
@@ -40,5 +44,22 @@ public class EndpointsTest {
 
     @Test
     void downloadTodoImage() {
+    }
+
+    @Test
+    void updateImageById() throws Exception{
+        mockMvc.perform(put("/api/v1/todo/image/update/vlad/1")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(new Image("title", "descrip",
+                        "imagePath","fileName", new User()))))
+                .andExpect(status().isOk());
+    }
+    @Test
+    void updateImageNotOwned() throws Exception{
+        mockMvc.perform(put("/api/v1/todo/image/update/karim/1")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(new Image("title", "descrip",
+                        "imagePath","fileName", new User()))))
+                .andExpect(status().isForbidden());
     }
 }

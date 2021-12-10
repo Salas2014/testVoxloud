@@ -21,4 +21,12 @@ public class UserNotFoundAdvice {
     String imageNotFoundHandler(ImageNotFoundException ex) {
         return ex.getMessage();
     }
+
+    @ResponseBody
+    @ExceptionHandler(ConflictUniqueValue.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    String conflictUniqueValue(ConflictUniqueValue ex){
+        return ex.getMessage();
+    }
+
 }

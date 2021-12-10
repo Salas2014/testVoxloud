@@ -4,11 +4,13 @@ package com.voxloud.testjob.service;
 import com.voxloud.testjob.bucket.BucketName;
 import com.voxloud.testjob.domain.Image;
 import com.voxloud.testjob.domain.User;
+import com.voxloud.testjob.exception.ConflictUniqueValue;
 import com.voxloud.testjob.exception.ImageNotFoundException;
 import com.voxloud.testjob.exception.UserNotFoundException;
 import com.voxloud.testjob.repository.ImageRepository;
 import com.voxloud.testjob.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -73,8 +75,12 @@ public class ImageServiceImpl implements ImageService {
                         .user(userByUsername.get())
                         .imageFileName(fileName)
                         .build();
-                repository.save(image);
-                images.add(image);
+                try {
+                    repository.save(image);
+                    images.add(image);
+                }catch (DataIntegrityViolationException exception){
+                  throw new ConflictUniqueValue(image.getTag());
+                }
 
             }
             wrapper.ordinal++;
@@ -117,11 +123,17 @@ public class ImageServiceImpl implements ImageService {
                 .findFirst();
 
         if(first.isPresent()){
-            image.setUser(userByUsername);
-            return repository.save(image);
+            try {
+                image.setUser(userByUsername);
+                return repository.save(image);
+            } catch (DataIntegrityViolationException exception){
+                throw new ConflictUniqueValue(image.getTag());
+            }
         }else {
             throw new ImageNotFoundException(id);
         }
     }
+
+
 
 }

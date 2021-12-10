@@ -1,0 +1,41 @@
+[33mcommit 945aae4bae04241a25ed1756724ff2bc768103c3[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: salas <salasengland33@gmail.com>
+Date:   Fri Dec 10 18:18:01 2021 +0200
+
+    add update method for image
+
+[33mcommit b3adb6c4f39de55855437dee42ad50f820b50be4[m
+Author: salas <salasengland33@gmail.com>
+Date:   Fri Dec 10 04:18:49 2021 +0200
+
+    fix bags
+
+[33mcommit 529a27e8f491e2c09edb2421e84ad0a46e60c7ef[m
+Author: salas <salasengland33@gmail.com>
+Date:   Fri Dec 10 01:16:21 2021 +0200
+
+    add some test and try to add preuthorize
+
+[33mcommit 7ea9234642881bc800f981596c5eb1a2ec5f2773[m
+Author: salas <salasengland33@gmail.com>
+Date:   Thu Dec 9 22:45:26 2021 +0200
+
+    add some tests
+
+[33mcommit 63567fa3bc8b656ff719d30b63b84b5052863f57[m
+Author: salas <salasengland33@gmail.com>
+Date:   Thu Dec 9 00:04:10 2021 +0200
+
+    add pagination
+
+[33mcommit 514ca0691b5a8b9ef5a7ab7fbf5e9bc06bda01b0[m
+Author: salas <salasengland33@gmail.com>
+Date:   Wed Dec 8 23:07:17 2021 +0200
+
+    fixx some bags
+
+[33mcommit e966a7dbb18627fbed40a082187c75885d7bd351[m
+Author: salas <salasengland33@gmail.com>
+Date:   Wed Dec 8 18:53:23 2021 +0200
+
+    add controller for []image
