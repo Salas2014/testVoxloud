@@ -4,6 +4,7 @@ import com.voxloud.testjob.domain.Image;
 import com.voxloud.testjob.domain.User;
 import com.voxloud.testjob.service.ImageService;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.NotFoundAction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
+import java.nio.file.FileSystemNotFoundException;
 import java.util.List;
 
 @RestController
@@ -66,4 +69,15 @@ public class ImageController {
                                 @PathVariable("username")String username) {
         return imageService.downloadTodoImage(id, username);
     }
+
+    @PutMapping(value = "/image/update/{username}/{id}",
+                produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("#username == authentication.getName()")
+    public ResponseEntity<Image> updateImage(@RequestBody Image image,
+                                             @PathVariable("id") Long id,
+                                             @PathVariable("username")String username) {
+
+        return new ResponseEntity<>(imageService.updateImage(id, username, image), HttpStatus.OK);
+    }
+
 }

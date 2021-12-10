@@ -13,5 +13,6 @@ public interface ImageService {
 
     List<Image> saveImages(String[] titles, String[] descriptions, MultipartFile[] files, String username);
 
+    Image updateImage(Long id, String username, Image image);
 
 }

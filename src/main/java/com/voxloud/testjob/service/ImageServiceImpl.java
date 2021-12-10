@@ -1,9 +1,11 @@
 package com.voxloud.testjob.service;
 
-import com.amazonaws.services.mq.model.NotFoundException;
+
 import com.voxloud.testjob.bucket.BucketName;
 import com.voxloud.testjob.domain.Image;
 import com.voxloud.testjob.domain.User;
+import com.voxloud.testjob.exception.ImageNotFoundException;
+import com.voxloud.testjob.exception.UserNotFoundException;
 import com.voxloud.testjob.repository.ImageRepository;
 import com.voxloud.testjob.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.FileSystemNotFoundException;
 import java.util.*;
 
 import static org.apache.http.entity.ContentType.*;
@@ -89,7 +92,7 @@ public class ImageServiceImpl implements ImageService {
         if(image.isPresent()){
             return fileStore.download(image.get().getImagePath(), image.get().getImageFileName());
         }
-        throw new NotFoundException("images with id-" + id + " don't found ");
+        throw new FileSystemNotFoundException("images with id-" + id + " don't found ");
     }
 
     @Override
@@ -100,6 +103,25 @@ public class ImageServiceImpl implements ImageService {
         userByUsername.ifPresent(user -> user.getImages().forEach(images::add));
 
         return images;
+    }
+
+    @Override
+    public Image updateImage(Long id, String username, Image image){
+
+        User userByUsername = userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        Optional<Image> first = userByUsername.getImages()
+                .stream()
+                .filter(img -> img.getId().equals(id))
+                .findFirst();
+
+        if(first.isPresent()){
+            image.setUser(userByUsername);
+            return repository.save(image);
+        }else {
+            throw new ImageNotFoundException(id);
+        }
     }
 
 }
