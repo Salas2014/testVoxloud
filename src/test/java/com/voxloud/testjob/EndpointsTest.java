@@ -55,7 +55,7 @@ public class EndpointsTest {
                 .andExpect(status().isOk());
     }
     @Test
-    void updateImageNotOwned() throws Exception{
+    void updateImageNotOwnedImage() throws Exception{
         mockMvc.perform(put("/api/v1/todo/image/update/karim/1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(mapper.writeValueAsString(new Image("title", "descrip",
