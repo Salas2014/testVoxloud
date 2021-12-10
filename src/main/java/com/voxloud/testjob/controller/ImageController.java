@@ -59,10 +59,9 @@ public class ImageController {
         return new ResponseEntity<>(imageService.saveImages(titles, descriptions, files, authentication.getName()), HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "{id}/image/download/{username}",
+    @GetMapping(value = "/image/download/{username}/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize
-            ("#username == authentication.getName()")
+    @PreAuthorize("#username == authentication.getName()")
     public byte[] downloadImage(@PathVariable("id") Long id,
                                 @PathVariable("username")String username) {
         return imageService.downloadTodoImage(id, username);

@@ -7,8 +7,6 @@ import com.voxloud.testjob.domain.User;
 import com.voxloud.testjob.repository.ImageRepository;
 import com.voxloud.testjob.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,26 +40,22 @@ public class ImageServiceImpl implements ImageService {
             }
         }
 
-        Optional<Image> karim = repository.findImageByUser("karim");
-        if(karim.isPresent()){
-            System.out.println(karim);
-        }else {
-            System.out.println("zalypa");
-
-        }        List<HashMap<String, String>> metadata = new ArrayList<>();
+        List<HashMap<String, String>> metadata = new ArrayList<>();
         List<Image> images = new ArrayList<>();
 
+        var wrapper = new Object(){ int ordinal = 0; };
+
         Arrays.stream(files).forEach(file -> {
-            int a = 0;
+
             //get file metadata
             metadata.add(new HashMap<>());
-            metadata.get(a).put("Content-Type", file.getContentType());
-            metadata.get(a).put("Content-Length", String.valueOf(file.getSize()));
+            metadata.get(wrapper.ordinal).put("Content-Type", file.getContentType());
+            metadata.get(wrapper.ordinal).put("Content-Length", String.valueOf(file.getSize()));
             //Save Image in S3 and then save Image in the database
             String path = String.format("%s/%s", BucketName.TODO_IMAGE.getBucketName(), UUID.randomUUID());
             String fileName = String.format("%s", file.getOriginalFilename());
             try {
-                fileStore.upload(path, fileName, Optional.of(metadata.get(a)), file.getInputStream());
+                fileStore.upload(path, fileName, Optional.of(metadata.get(wrapper.ordinal)), file.getInputStream());
             } catch (IOException e) {
                 throw new IllegalStateException("Failed to upload file", e);
             }
@@ -70,26 +64,27 @@ public class ImageServiceImpl implements ImageService {
 
             if(userByUsername.isPresent()){
                 Image image = Image.builder()
-                        .description(descriptions[a])
-                        .title(titles[a])
+                        .tag(descriptions[wrapper.ordinal])
+                        .title(titles[wrapper.ordinal])
                         .imagePath(path)
                         .user(userByUsername.get())
                         .imageFileName(fileName)
                         .build();
                 repository.save(image);
                 images.add(image);
-            }
 
-            a++;
+            }
+            wrapper.ordinal++;
         });
 
         return images;
     }
 
     @Override
+
     public byte[] downloadTodoImage(Long id, String username) {
 
-        Optional<Image> image = repository.findImageByUser(username);
+        Optional<Image> image = repository.findById(id);
 
         if(image.isPresent()){
             return fileStore.download(image.get().getImagePath(), image.get().getImageFileName());

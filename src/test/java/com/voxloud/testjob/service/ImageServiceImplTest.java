@@ -54,7 +54,7 @@ class ImageServiceImplTest {
 
         for(int i = 1; i<files.length; i++){
             Image image = Image.builder()
-                    .description(description[i])
+                    .tag(description[i])
                     .title(titles[i])
                     .imagePath(path)
                     .user(user)

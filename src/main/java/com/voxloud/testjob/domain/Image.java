@@ -1,6 +1,7 @@
 package com.voxloud.testjob.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
 import lombok.Builder;
 
 import javax.persistence.*;
@@ -9,35 +10,37 @@ import java.util.Objects;
 
 @Builder
 @Entity
+
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    private String description;
+    @NotNull
+    @Column(unique = true)
+    private String tag;
     private String imagePath;
     private String imageFileName;
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     private User user;
-    
 
     public Image() {
     }
 
-    public Image(Long id, String title, String description, String imagePath, String imageFileName, User user) {
+    public Image(Long id, String title, String tag, String imagePath, String imageFileName, User user) {
         this.id = id;
         this.title = title;
-        this.description = description;
+        this.tag = tag;
         this.imagePath = imagePath;
         this.imageFileName = imageFileName;
         this.user = user;
     }
 
-    public Image(String title, String description, String imagePath, String imageFileName, User user) {
+    public Image(String title, String tag, String imagePath, String imageFileName, User user) {
         this.title = title;
-        this.description = description;
+        this.tag = tag;
         this.imagePath = imagePath;
         this.imageFileName = imageFileName;
         this.user = user;
@@ -47,7 +50,7 @@ public class Image {
     public String toString() {
         return "Image{" +
                 "title='" + title + '\'' +
-                ", description='" + description + '\'' +
+                ", description='" + tag + '\'' +
                 ", imagePath='" + imagePath + '\'' +
                 ", imageFileName='" + imageFileName + '\'' +
                 '}';
@@ -69,12 +72,12 @@ public class Image {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getTag() {
+        return tag;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTag(String description) {
+        this.tag = description;
     }
 
     public String getImagePath() {
@@ -106,12 +109,12 @@ public class Image {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Image image = (Image) o;
-        return Objects.equals(id, image.id) && Objects.equals(title, image.title) && Objects.equals(description, image.description) && Objects.equals(imagePath, image.imagePath) && Objects.equals(imageFileName, image.imageFileName) && Objects.equals(user, image.user);
+        return Objects.equals(id, image.id) && Objects.equals(title, image.title) && Objects.equals(tag, image.tag) && Objects.equals(imagePath, image.imagePath) && Objects.equals(imageFileName, image.imageFileName) && Objects.equals(user, image.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, imagePath, imageFileName, user);
+        return Objects.hash(id, title, tag, imagePath, imageFileName, user);
     }
 
 
