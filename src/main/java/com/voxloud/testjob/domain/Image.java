@@ -3,8 +3,11 @@ package com.voxloud.testjob.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Builder;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -25,6 +28,11 @@ public class Image {
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     private User user;
+    @Column(updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public Image() {
     }
@@ -36,6 +44,17 @@ public class Image {
         this.imagePath = imagePath;
         this.imageFileName = imageFileName;
         this.user = user;
+    }
+
+    public Image(Long id, String title, String tag, String imagePath, String imageFileName, User user, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.title = title;
+        this.tag = tag;
+        this.imagePath = imagePath;
+        this.imageFileName = imageFileName;
+        this.user = user;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Image(String title, String tag, String imagePath, String imageFileName, User user) {
